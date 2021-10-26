@@ -1,0 +1,21 @@
+RedHat Python using Docker Image in Openshift
+images released through Artifactory for later to be picked up for app usage
+To use specific image to create sample app in OSE run
+oc new-appn docker-eterprise-artifactoryrepo.gov/rhel-python-rhel8:latest --allow-missing-images --name=myphtest
+Python image is provided as a runtime 
+Dockerfile
+standard how to make docker image work
+RUN mkdir /pyapps
+ADD apps /pyapps
+WORKDIR /pyapps/app
+
+RUN chown -R $FID:$GID /pyapps && chmod -R g+w $_
+
+RUN pip install flask --no-chache-dir
+#switch uid
+USER ${FID}
+CMD ["python", "app.py"]
+CI/CD process uses specific build systems and then deploy to OpenShift
+when in dev mode, build image localy and push to Artifactory and run following command to manually deploy in Openshift
+oc process -f rpy_secret_template.json `cat rpy-rhel8-secrets.dav.dev` 
+oc apply -f -
